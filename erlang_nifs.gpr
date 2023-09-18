@@ -1,0 +1,62 @@
+with "config/erlang_nifs_config.gpr";
+project Erlang_Nifs is
+
+   for Languages use ("ada", "C++");
+
+   for Library_Name use "Erlang_Nifs";
+   for Library_Version use Project'Library_Name & ".so." & Erlang_Nifs_Config.Crate_Version;
+
+   for Source_Dirs use ("src/", "config/");
+   for Object_Dir use "obj/" & Erlang_Nifs_Config.Build_Profile;
+   for Create_Missing_Dirs use "True";
+   for Library_Dir use "lib";
+
+   -- for Main use ("main.adb");
+
+
+-- -bundle -bundle_loader $ERL_ROOT/erts-12.3/bin/beam.smp
+-- alr exec -- gcc -fPIC -o lib/niftest.so src/nif_bootstrap.c -I /usr/local/Cellar/erlang/26.0.2/lib/erlang/erts-14.0.2/include -bundle -bundle_loader /usr/local/Cellar/erlang/26.0.2/lib/erlang/erts-14.0.2/bin/beam.smp
+   
+
+   type Library_Type_Type is ("relocatable", "static", "static-pic");
+   Library_Type : Library_Type_Type :=
+     external ("ERLANG_NIFS_LIBRARY_TYPE", external ("LIBRARY_TYPE", "relocatable"));
+   for Library_Kind use Library_Type;
+
+   package Compiler is
+      for Default_Switches ("Ada") use Erlang_Nifs_Config.Ada_Compiler_Switches & ("-fPIC", "-gnata");
+      for Default_Switches ("C++") use ("-I/usr/local/Cellar/erlang/26.0.2/lib/erlang/usr/include") & ("-fPIC");
+   end Compiler;
+
+   -- case Library_Type is
+   --    when others =>
+   --       -- for Library_Options use ("-bundle", "-bundle_loader /usr/local/Cellar/erlang/26.0.2/lib/erlang/erts-14.0.2/bin/beam.smp", "-o niftest.so");
+   --       for Library_Options use ("-bundle", "-bundle_loader /usr/local/Cellar/erlang/26.0.2/lib/erlang/erts-14.0.2/bin/beam.smp");
+   --    -- when "static" =>
+   --    --    null;
+   -- end case;
+
+   -- package Linker is
+   --    for Default_Switches ("Ada") use Linker'Default_Switches ("Ada"); -- & ("-bundle", "-bundle_loader /usr/local/Cellar/erlang/26.0.2/lib/erlang/erts-14.0.2/bin/beam.smp", "-olib/niftest.so");
+   -- end Linker;
+
+   package Binder is
+      for Switches ("Ada") use ("-Es"); --  Symbolic traceback
+   end Binder;
+
+   package Install is
+      for Artifacts (".") use ("share");
+   end Install;
+
+end Erlang_Nifs;
+
+-- project Nif_Bootstrap is
+
+--    for Languages use ("c");
+--    for Main use ("erlang_bootstrap.c");
+--    for Exec_Dir use ".";
+--    for Source_Dirs use (".");
+--    for Object_Dir use "obj";
+--    for Create_Missing_Dirs use "true";
+
+-- end Main;

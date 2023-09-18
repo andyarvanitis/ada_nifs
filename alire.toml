@@ -1,0 +1,13 @@
+name = "erlang_nifs"
+description = "Shiny new project"
+version = "0.1.0-dev"
+
+authors = ["Andy Arvanitis"]
+maintainers = ["Andy Arvanitis <andyarvanitis@gmail.com>"]
+maintainers-logins = ["andyarvanitis"]
+
+[build-switches]
+"*".style_checks = "No"
+"*".ada_version = "Ada2022"
+[[depends-on]]
+gnatprove = "^12.1.1"
