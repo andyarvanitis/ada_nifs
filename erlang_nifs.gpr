@@ -14,13 +14,6 @@ project Erlang_Nifs is
    for Object_Dir use "obj/" & Erlang_Nifs_Config.Build_Profile;
    for Create_Missing_Dirs use "True";
 
-   -- for Main use ("nif_bootstrap.cpp");
-
-
--- -bundle -bundle_loader $ERL_ROOT/erts-12.3/bin/beam.smp
--- alr exec -- gcc -fPIC -o lib/niftest.so src/nif_bootstrap.c -I /usr/local/Cellar/erlang/26.0.2/lib/erlang/erts-14.0.2/include -bundle -bundle_loader /usr/local/Cellar/erlang/26.0.2/lib/erlang/erts-14.0.2/bin/beam.smp
-   
-
    type Library_Type_Type is ("relocatable", "static", "static-pic");
    Library_Type : Library_Type_Type :=
      external ("ERLANG_NIFS_LIBRARY_TYPE", external ("LIBRARY_TYPE", "static-pic"));
@@ -35,62 +28,25 @@ project Erlang_Nifs is
    for Archive_Builder use ("true"); -- no-op
    for Archive_Indexer use ("true"); -- no-op
 
-   Runtime_Dir := External ("null", " $(dirname `gcc --print-libgcc`)");
-   Foo_Tme := External ("null", "export RDIR=/usr/local/shar");
-   -- Runtime_Dir := External ("dirname", "");
+   -- Runtime_Dir := "$(dirname $(gcc --print-libgcc))";
+   Runtime_Dir := "/Users/andy/.config/alire/cache/dependencies/gnat_native_12.2.1_77267eb1/bin/../lib/gcc/x86_64-apple-darwin19.6.0/12.2.0";
+   Runtime_Lib := Runtime_Dir & "/adalib/libgnat_pic.a";
 
-   -- Runtime_Dir := External ("echo", "$(dirname `gcc --print-libgcc`)");
-
-   -- Runtime_Dir1 := External ("eval", Lib_Gcc);
-   -- Runtime_Dir2 := External ("dirname", Lib_Gcc);
-   -- Runtime_Dir := External ("eval", Runtime_Dir2);
-   -- Runtime_Lib1 := External ("eval", Runtime_Dir);
-   -- Runtime_Lib2 := External ("echo", "/adalib/libgnat_pic.a");
-   -- Runtime_Lib := Runtime_Dir & "/adalib/libgnat_pic.a";
-
-   -- case Runtime_Dir is
-   --    when others =>
-   --       Runtime_Lib := Runtime_Dir & "/adalib/libgnat_pic.a";
-   -- end case;
-
-   Erlang_Cmd := "-noshell -eval 'io:fwrite(code:lib_dir(erts))' -eval 'init:stop()'";
-   Erlang_Rts_Dir := External ("erl", Erlang_Cmd);
-   Erlang_Lib_Bundle := "/usr/local/lib/erlang/erts-14.0.2/bin/beam.smp"; --  code:lib_dir(erts)/bin/beam.smp
-
-   -- Erlang_Lib_Bundle := "/usr/local/lib/erlang/erts-14.0.2/bin/beam.smp"; --  code:lib_dir(erts)/bin/beam.smp
-
-   for Library_Partial_Linker use ("bash"); -- no-op
+   -- Erlang_Rts_Dir := "-noshell -eval 'io:fwrite(code:lib_dir(erts))' -eval 'init:stop()'";
+   Erlang_Lib_Bundle := "/usr/local/lib/erlang/erts-14.0.2/bin/beam.smp";
 
    case Library_Type is
+      when "static-pic" =>
+         for Library_Options use ("-lc",
+                                    "-lstdc++",
+                                    "-L" & Runtime_Dir,
+                                    Runtime_Lib,
+                                    "-bundle",
+                                    "-bundle_loader" & Erlang_Lib_Bundle,
+                                    "-o" & Project'Library_Name & ".so");
       when others =>
-         -- for Library_Options use ("-bundle", "-bundle_loader /usr/local/Cellar/erlang/26.0.2/lib/erlang/erts-14.0.2/bin/beam.smp", "-o niftest.so");
-         for Library_Options use ("echo", "-lc",
-                                  "-lstdc++",
-                                  "-L", Runtime_Dir,
-                                  Runtime_Dir & "/adalib/libgnat_pic.a",
-                                  "-bundle",
-                                  "-bundle_loader", Erlang_Lib_Bundle,
-                                  "-oniftest.so");
-      -- when "static" =>
-      --    null;
+         null;
    end case;
-
-   -- case Library_Type is
-   --    when others =>
-   --       -- for Library_Options use ("-bundle", "-bundle_loader /usr/local/Cellar/erlang/26.0.2/lib/erlang/erts-14.0.2/bin/beam.smp", "-o niftest.so");
-   --       for Library_Options use ("-lgnat");
-   --    -- when "static" =>
-   --    --    null;
-   -- end case;
-
-
-   -- package Linker is
-   --    for Default_Switches ("Ada") use Linker'Default_Switches ("Ada"); -- & ("-bundle", "-bundle_loader /usr/local/Cellar/erlang/26.0.2/lib/erlang/erts-14.0.2/bin/beam.smp", "-olib/niftest.so");
-   -- end Linker;
-
-   -- package Linker is
-   --    for Default_Switches ("Ada") use ("-bundle", "-bundle_loader /usr/local/lib/erlang/erts-14.0.2/bin/beam.smp");
-   -- end Linker;
 
    package Binder is
       for Switches ("Ada") use ("-Es"); --  Symbolic traceback
@@ -101,14 +57,3 @@ project Erlang_Nifs is
    end Install;
 
 end Erlang_Nifs;
-
--- project Nif_Bootstrap is
-
---    for Languages use ("c");
---    for Main use ("erlang_bootstrap.c");
---    for Exec_Dir use ".";
---    for Source_Dirs use (".");
---    for Object_Dir use "obj";
---    for Create_Missing_Dirs use "true";
-
--- end Main;
