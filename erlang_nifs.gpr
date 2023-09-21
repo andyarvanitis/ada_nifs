@@ -6,10 +6,13 @@ project Erlang_Nifs is
    for Library_Name use "Erlang_Nifs";
    for Library_Version use Project'Library_Name & ".so." & Erlang_Nifs_Config.Crate_Version;
 
+   for Library_Interface use ("my_nifs");
+   for Library_Auto_Init use "true";
+   for Library_Dir use "lib";
+
    for Source_Dirs use ("src/", "config/");
    for Object_Dir use "obj/" & Erlang_Nifs_Config.Build_Profile;
    for Create_Missing_Dirs use "True";
-   for Library_Dir use "lib";
 
    -- for Main use ("main.adb");
 
@@ -20,12 +23,12 @@ project Erlang_Nifs is
 
    type Library_Type_Type is ("relocatable", "static", "static-pic");
    Library_Type : Library_Type_Type :=
-     external ("ERLANG_NIFS_LIBRARY_TYPE", external ("LIBRARY_TYPE", "relocatable"));
+     external ("ERLANG_NIFS_LIBRARY_TYPE", external ("LIBRARY_TYPE", "static"));
    for Library_Kind use Library_Type;
 
    package Compiler is
       for Default_Switches ("Ada") use Erlang_Nifs_Config.Ada_Compiler_Switches & ("-fPIC", "-gnata");
-      for Default_Switches ("C++") use ("-I/usr/local/Cellar/erlang/26.0.2/lib/erlang/usr/include") & ("-fPIC");
+      for Default_Switches ("C++") use ("-I/usr/local/lib/erlang/usr/include") & ("-fPIC");
    end Compiler;
 
    -- case Library_Type is
