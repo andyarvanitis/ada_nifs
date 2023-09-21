@@ -11,7 +11,7 @@ package erlang_nifs is
 
    type enif_environment_t is null record;
    subtype erl_nif_env_t is enif_environment_t;
-   subtype erl_nif_term_t is interfaces.unsigned_64;
+   type erl_nif_term_t is new interfaces.unsigned_64;
 
    type nif_supported_type_id is (e_integer, e_float, e_string);
 
@@ -27,19 +27,20 @@ package erlang_nifs is
    --  package string_type is new nif_supported_types(string, e_string);
 
 private
+
    generic
       with package value_type is new nif_supported_types (<>);
    package get_values is
-      function enif_get_value(env: access erl_nif_env_t; term: erl_nif_term_t) return value_type.t;
+      function get_value(env: access erl_nif_env_t; term: erl_nif_term_t) return value_type.t;
    end get_values;
 
    generic
       with package value_type is new nif_supported_types (<>);
    package make_values is
-      function enif_make_value(env: access erl_nif_env_t; value: in value_type.t) return erl_nif_term_t;
+      function make_value(env: access erl_nif_env_t; value: in value_type.t) return erl_nif_term_t;
    end make_values;
 
-   type erl_nif_terms_t is array (integer range 0 .. integer'last) of aliased erl_nif_term_t;
+   type erl_nif_terms_t is array (0 .. C.int'last) of aliased erl_nif_term_t;
 
    type nif_fn_t is access function(env : access erl_nif_env_t;
                                     argc : C.int;

@@ -50,6 +50,7 @@ package body erlang_nifs is
 
    --------------------------------------------------------------------------------- 
 
+
    package body get_values is
       --  pragma SPARK_Mode;
 
@@ -100,7 +101,7 @@ package body erlang_nifs is
       end get_string;
 
 
-      function enif_get_value(env: access erl_nif_env_t; term: erl_nif_term_t) return value_type.t is
+      function get_value(env: access erl_nif_env_t; term: erl_nif_term_t) return value_type.t is
       begin
          case value_type.type_id is
             when e_integer =>
@@ -110,7 +111,7 @@ package body erlang_nifs is
             when e_string =>
                return convert(get_string(env, term));
          end case;
-      end enif_get_value;
+      end get_value;
    end get_values;
 
 
@@ -118,7 +119,7 @@ package body erlang_nifs is
 
       function convert is new unchecked_conversion(source =>  value_type.t, target => integer);
 
-      function enif_make_value(env: access erl_nif_env_t; value: in value_type.t) return erl_nif_term_t is
+      function make_value(env: access erl_nif_env_t; value: in value_type.t) return erl_nif_term_t is
       begin
          case value_type.type_id is
             when e_integer =>
@@ -128,7 +129,7 @@ package body erlang_nifs is
             when others => 
                return erl_nif_term_t'(0);
          end case;         
-      end enif_make_value;
+      end make_value;
 
    end make_values;
 
