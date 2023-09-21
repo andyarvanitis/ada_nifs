@@ -7,13 +7,10 @@
 -on_load(init/0).
 
 init() ->
-      erlang:load_nif("./lib/niftest", 0).
+      erlang:load_nif("./obj/development/Erlang_Nifs", 0).
 
 % hello() ->
 %       erlang:nif_error("NIF library not loaded").
 
-% dofoo(_) ->
-%       erlang:nif_error("NIF library not loaded").
-
-increment(X) ->
+increment(_x) ->
       erlang:nif_error("NIF library not loaded").

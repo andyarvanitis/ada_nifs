@@ -4,3 +4,4 @@
 /alire/
 /config/
 .DS_Store
+*.beam
