@@ -128,7 +128,6 @@ package body erlang_nifs is
             when others => 
                return erl_nif_term_t'(0);
          end case;         
-         return erl_nif_term_t'(0);
       end enif_make_value;
 
    end make_values;

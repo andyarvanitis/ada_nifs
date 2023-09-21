@@ -10,41 +10,15 @@
 using nif_fn_t = ERL_NIF_TERM (*)(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]);
 
 extern "C" {
-    /* 
-    **  Read by Ada code
-    */
-    // extern const int max_nifs = MAX_NIFS;
-
-    // int max_nifs() {
-    //     return MAX_NIFS;
-    // }
-
-    /* 
-    **  Used (modified) by Ada code
-    */
-    // int nifs_available = MAX_NIFS;
-
     extern void Erlang_Nifsinit();
-    extern void Erlang_Nifsfinal();
-
-    // extern nif_fn_t get_stub();
-    // extern char* get_fname();
-    // extern ErlNifFunc * get_funcs();
-
-    extern void populate_functions(ErlNifFunc * funcs, int cnt);
-
+    // extern void Erlang_Nifsfinal();
+    // extern void populate_functions(ErlNifFunc * funcs, int cnt);
 } // extern "C"
-
 
 
 // static ERL_NIF_TERM hello(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 // {
 //     return enif_make_string(env, "Hello world!", ERL_NIF_LATIN1);
-// }
-
-// static ERL_NIF_TERM foo(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
-// {
-//     return enif_make_int(env, 100);
 // }
 
 static ERL_NIF_TERM not_implemented(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
@@ -53,27 +27,11 @@ static ERL_NIF_TERM not_implemented(ErlNifEnv* env, int argc, const ERL_NIF_TERM
     // return 0;
 }
 
-static ERL_NIF_TERM other(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
-{
-    return enif_make_string(env, "<other>", ERL_NIF_LATIN1);
-    // return 0;
-}
-
-// extern ERL_NIF_TERM erlang_name(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]);
-
-// extern ErlNifFunc nif_funcs[MAX_NIFS];
 
 ErlNifFunc input_funcs[MAX_NIFS] =
 {
     { "impl", 0, not_implemented, 0 }
 };
-
-
-// ErlNifFunc nif_funcs[MAX_NIFS] =
-// {
-//     { "not_impl", 0, not_implemented, 0 }
-// };
-
 
 
 class niflist {
@@ -93,7 +51,7 @@ public:
         // nif_funcs_internal[0] = nif_funcs[0];
         nif_funcs_internal[0] = input_funcs[0];
 
-        populate_functions(nif_funcs_internal, MAX_NIFS);
+        // populate_functions(nif_funcs_internal, MAX_NIFS);
 
 
         // nif_funcs[0].name = get_fname();
@@ -110,7 +68,7 @@ public:
     }
 
     ~niflist() {
-        Erlang_Nifsfinal();
+        // Erlang_Nifsfinal();
     }
 
     ErlNifFunc operator *() {
@@ -125,13 +83,13 @@ public:
 niflist fs; // = new niflist();
 
 
-static int load(ErlNifEnv* env, void** priv_data, ERL_NIF_TERM load_info)
-{
-    // Erlang_Nifsinit();
-    // fs.init();
-    // nif_funcs[0] = input_funcs[0];
-    return 0;
-}
+// static int load(ErlNifEnv* env, void** priv_data, ERL_NIF_TERM load_info)
+// {
+//     // Erlang_Nifsinit();
+//     // fs.init();
+//     // nif_funcs[0] = input_funcs[0];
+//     return 0;
+// }
 
 // static int upgrade(ErlNifEnv* env, void** priv_data, void** old_priv_data, ERL_NIF_TERM load_info)
 // {
@@ -141,6 +99,6 @@ static int load(ErlNifEnv* env, void** priv_data, ERL_NIF_TERM load_info)
 
 extern "C" {
 
-    ERL_NIF_INIT(niftest, fs, load, NULL, NULL, NULL)
+    ERL_NIF_INIT(niftest, fs, NULL, NULL, NULL, NULL)
 
 } // extern "C"
