@@ -1,4 +1,4 @@
--module(niftest).
+-module(my_nifs).
 
 -export([init/0,increment/1]).
 

@@ -6,7 +6,6 @@ with ada.containers.vectors;
 
 package erlang_nifs is
    --  pragma SPARK_mode;
-   pragma elaborate_body;
    pragma Assertion_Policy(Check);
 
    type enif_environment_t is null record;
