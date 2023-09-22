@@ -1,7 +1,10 @@
 
 package supported_erlang_types is
+   pragma assertion_policy(check);
 
    type nif_supported_type_id is (e_integer, e_long_float, e_string);
+
+   type_definition_error: exception;
 
    generic
       type t (<>) is private;
@@ -23,14 +26,14 @@ package supported_erlang_types is
    package conversions is
       function to_t(x: in t) return t is (x);
       function to_t(unused: in t)
-         return t1 is (raise constraint_error);
+         return t1 is (raise type_definition_error);
       function to_t(unused: in t)
-         return t2 is (raise constraint_error);
+         return t2 is (raise type_definition_error);
       function from_t(x: in t) return t is (x);
       function from_t(unused: in t)
-         return t1 is (raise constraint_error);
+         return t1 is (raise type_definition_error);
       function from_t(unused: in t)
-         return t2 is (raise constraint_error);
+         return t2 is (raise type_definition_error);
    end conversions;
 
    package integer_conversions is new conversions(integer, long_float, string);

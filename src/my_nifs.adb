@@ -22,9 +22,6 @@ package body my_nifs is
       return_type => string_type,
       ada_function => uppercase);
 
-begin
-   incrementer.do_nothing;
-   negater.do_nothing;
-   uppercaser.do_nothing;
+ pragma unreferenced (incrementer, negater, uppercaser);
 
 end my_nifs;

@@ -5,10 +5,9 @@ generic
    with package return_type is new nif_supported_types (<>);
    with function ada_function(x: in argument_type.t) return return_type.t;
 package erlang_nifs.arity_1 is
+   pragma SPARK_mode;
    pragma elaborate_body;
    pragma Assertion_Policy(Check);
-
-procedure do_nothing is null;
 
 private
    function nif_wrapper(env: access erl_nif_env_t;
