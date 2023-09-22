@@ -10,7 +10,7 @@ package erlang_nifs.arity_1 is
    pragma Assertion_Policy(Check);
 
 private
-   function nif_wrapper(env: access erl_nif_env_t;
+   function nif_wrapper(env: not null access erl_nif_env_t;
                         argc: C.int;
                         argv: erl_nif_terms_t) return erl_nif_term_t
       with

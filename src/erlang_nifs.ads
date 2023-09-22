@@ -27,18 +27,20 @@ private
    generic
       with package value_type is new nif_supported_types (<>);
    package get_values is
-      function get_value(env: access erl_nif_env_t; term: erl_nif_term_t) return value_type.t;
+      function get_value(env: not null access erl_nif_env_t;
+                         term: erl_nif_term_t) return value_type.t;
    end get_values;
 
    generic
       with package value_type is new nif_supported_types (<>);
    package make_values is
-      function make_value(env: access erl_nif_env_t; value: in value_type.t) return erl_nif_term_t;
+      function make_value(env: not null access erl_nif_env_t;
+                          value: in value_type.t) return erl_nif_term_t;
    end make_values;
 
    type erl_nif_terms_t is array (0 .. C.int'last) of aliased erl_nif_term_t;
 
-   type nif_fn_t is access function(env : access erl_nif_env_t;
+   type nif_fn_t is access function(env : not null access erl_nif_env_t;
                                     argc : C.int;
                                     argv : erl_nif_terms_t) return erl_nif_term_t
       with convention => C;
@@ -54,10 +56,10 @@ private
    package funcs_vectors is new vectors(index_type => positive, element_type => enif_func_t);
    nif_functions: funcs_vectors.vector;
 
-   function raise_erlang_exception(env: access erl_nif_env_t;
+   function raise_erlang_exception(env: not null access erl_nif_env_t;
                                    message: in string) return erl_nif_term_t;
 
-   function raise_erlang_exception(env: access erl_nif_env_t;
+   function raise_erlang_exception(env: not null access erl_nif_env_t;
                                    error: in exception_occurrence) return erl_nif_term_t;
 
 end erlang_nifs;

@@ -4,7 +4,7 @@ package body erlang_nifs.arity_1 is
    package args is new get_values(argument_type); use args;
    package rets is new make_values(return_type); use rets;
 
-   function nif_wrapper(env: access erl_nif_env_t;
+   function nif_wrapper(env: not null access erl_nif_env_t;
                         argc: C.int with unreferenced;
                         argv: erl_nif_terms_t) return erl_nif_term_t is
    begin
