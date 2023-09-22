@@ -107,4 +107,22 @@ package body erlang_nifs is
 
    end make_values;
 
+   function raise_erlang_exception(env: access erl_nif_env_t;
+                                   message: in string) return erl_nif_term_t is
+      reason: constant erl_nif_term_t :=
+                  enif_make_string(env, C.to_C(message), ERL_NIF_LATIN1);
+   begin
+      return enif_raise_exception(env, reason);
+   end raise_erlang_exception;
+
+   function raise_erlang_exception(env: access erl_nif_env_t;
+                                   error: in exception_occurrence) return erl_nif_term_t is
+      message: constant string := "Ada exception: " &
+                                   exception_name(error) &
+                                  " - " &
+                                   exception_message(error);
+   begin
+      return raise_erlang_exception(env, message);
+   end raise_erlang_exception;
+
 end erlang_nifs;

@@ -53,6 +53,16 @@ private package erlang_nifs.c_apis is
             import => true,
             external_name => "enif_make_string";
 
+
+
+   -- ERL_NIF_TERM enif_raise_exception(ErlNifEnv* env, ERL_NIF_TERM reason)
+   function enif_raise_exception(env: access erl_nif_env_t;
+                                 reason: erl_nif_term_t) return erl_nif_term_t
+      with convention => C,
+            import => true,
+            external_name => "enif_raise_exception";
+
+
    --------------------------------------------------------------------------------------
    -- Function exposed to C side to fill NIF list during initialization
    --------------------------------------------------------------------------------------

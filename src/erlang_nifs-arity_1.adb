@@ -8,8 +8,12 @@ package body erlang_nifs.arity_1 is
                         argc: C.int with unreferenced;
                         argv: erl_nif_terms_t) return erl_nif_term_t is
    begin
-      -- TODO: Standardize on some exception handling here (raise erlang exceptions)
       return make_value(env, ada_function(get_value(env, argv(0))));
+
+   exception
+      when error: others =>
+         return raise_erlang_exception(env, error);
+
    end nif_wrapper;
 
 begin

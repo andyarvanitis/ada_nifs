@@ -3,6 +3,7 @@ with interfaces.C.strings;
 use type interfaces.C.int;
 with ada.containers; use ada.containers;
 with ada.containers.vectors;
+with ada.exceptions; use ada.exceptions;
 with supported_erlang_types; use supported_erlang_types;
 
 package erlang_nifs is
@@ -52,5 +53,11 @@ private
 
    package funcs_vectors is new vectors(index_type => positive, element_type => enif_func_t);
    nif_functions: funcs_vectors.vector;
+
+   function raise_erlang_exception(env: access erl_nif_env_t;
+                                   message: in string) return erl_nif_term_t;
+
+   function raise_erlang_exception(env: access erl_nif_env_t;
+                                   error: in exception_occurrence) return erl_nif_term_t;
 
 end erlang_nifs;
