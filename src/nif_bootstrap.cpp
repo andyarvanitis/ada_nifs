@@ -1,7 +1,7 @@
 #include <erl_nif.h>
 #include <assert.h>
 
-#define NUMBER_OF_NIFS 1
+#define NUMBER_OF_NIFS 2
 
 extern "C" {
     extern void Erlang_Nifsinit();

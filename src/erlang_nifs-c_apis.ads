@@ -41,7 +41,19 @@ private package erlang_nifs.c_apis is
             import => true,
             external_name => "enif_make_int";
 
-   -------------------------------------------a-------------------------------------------
+   function enif_make_double(env: access erl_nif_env_t; d: C.double) return erl_nif_term_t
+      with convention => C,
+            import => true,
+            external_name => "enif_make_double";
+
+   function enif_make_string(env: access erl_nif_env_t;
+                             str: C.char_array;
+                             encoding: C.unsigned) return erl_nif_term_t
+      with convention => C,
+            import => true,
+            external_name => "enif_make_string";
+
+   --------------------------------------------------------------------------------------
    -- Function exposed to C side to fill NIF list during initialization
    --------------------------------------------------------------------------------------
 

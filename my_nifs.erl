@@ -1,8 +1,8 @@
 -module(my_nifs).
 
--export([init/0,increment/1]).
+-export([init/0, increment/1, negate/1]).
 
--nifs([increment/1]).
+-nifs([increment/1, negate/1]).
 
 -on_load(init/0).
 
@@ -13,4 +13,7 @@ init() ->
 %       erlang:nif_error("NIF library not loaded").
 
 increment(_x) ->
+      erlang:nif_error("NIF library not loaded").
+
+negate(_x) ->
       erlang:nif_error("NIF library not loaded").
