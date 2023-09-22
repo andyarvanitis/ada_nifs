@@ -8,7 +8,7 @@ with supported_erlang_types; use supported_erlang_types;
 
 package erlang_nifs is
    --  pragma SPARK_mode;
-   pragma Assertion_Policy(Check);
+   pragma assertion_policy( check );
 
    type enif_environment_t is null record;
    subtype erl_nif_env_t is enif_environment_t;
