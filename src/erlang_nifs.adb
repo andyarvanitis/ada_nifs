@@ -3,8 +3,13 @@ with erlang_nifs.c_apis; use erlang_nifs.c_apis;
 
 package body erlang_nifs is
 
+   use type C.unsigned;
+   use type C.size_t;
+
+   ERL_NIF_LATIN1 : constant := 1;
+   --  ERL_NIF_UTF8   : constant := 2;
+
    package body get_values is
-      --  pragma SPARK_Mode;
 
       function get_int(env: access erl_nif_env_t; term: erl_nif_term_t) return integer is
          i: C.int := 0;
@@ -28,23 +33,33 @@ package body erlang_nifs is
       end get_double;
 
 
-      function get_string(env: access erl_nif_env_t; term: erl_nif_term_t) return string is
+      function get_string_length(env: access erl_nif_env_t;
+                                      term: erl_nif_term_t) return C.unsigned
+         with post => get_string_length'result < C.unsigned'last and
+                         C.size_t(get_string_length'result) < C.size_t'last is
          len: C.unsigned := 0;
-         ERL_NIF_UTF8: constant C.unsigned := 1; -- TODO: enum ERL_NIF_UTF8
       begin
-         if enif_get_string_length(env, term, len, ERL_NIF_UTF8) = 0 then
-            raise constraint_error;
+         if enif_get_string_length(env, term, len, ERL_NIF_LATIN1) = 0 then
+            raise Constraint_Error with "enif_get_string_length call failed";
          end if;
+         return len;
+      end get_string_length;
 
-         declare
-            buf: C.char_array(1 .. C.size_t(len));
-         begin
-            if enif_get_string(env, term, buf, len, ERL_NIF_UTF8) > 0 then
-               return C.to_ada(buf);
-            else
-               raise constraint_error;
-            end if;
-         end;
+
+      function get_string(env: access erl_nif_env_t; term: erl_nif_term_t) return string is
+         -- Increment length to account for terminating null
+         len : constant C.unsigned := get_string_length(env, term) + 1;
+         buf: C.char_array(1 .. C.size_t(len));
+         ret_code: integer;
+      begin
+         ret_code := enif_get_string(env, term, buf, len, ERL_NIF_LATIN1);
+         if ret_code > 0 then
+            return C.to_ada(buf);
+         elsif ret_code = 0 then
+            raise constraint_error with "enif_get_string call failed (cannot be encoded)";
+         else
+            raise constraint_error with "enif_get_string call failed (buffer too small)";
+         end if;
       end get_string;
 
 
@@ -82,9 +97,8 @@ package body erlang_nifs is
             when e_string =>
                declare
                   s: constant string := value_type.from_t(value);
-                  ERL_NIF_UTF8: constant C.unsigned := 1; -- TODO: enum ERL_NIF_UTF8
                begin
-                  return enif_make_string(env, C.to_C(s), ERL_NIF_UTF8);
+                  return enif_make_string(env, C.to_C(s), ERL_NIF_LATIN1);
                end;
             --  when others =>
             --     raise constraint_error;

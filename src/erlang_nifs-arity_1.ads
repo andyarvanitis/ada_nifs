@@ -1,9 +1,9 @@
 
 generic
    erlang_name: string;
-   with package arg_type is new nif_supported_types (<>);
-   with package ret_type is new nif_supported_types (<>);
-   with function ada_function(x: in arg_type.t) return ret_type.t;
+   with package argument_type is new nif_supported_types (<>);
+   with package return_type is new nif_supported_types (<>);
+   with function ada_function(x: in argument_type.t) return return_type.t;
 package erlang_nifs.arity_1 is
    pragma elaborate_body;
    pragma Assertion_Policy(Check);
@@ -14,7 +14,7 @@ private
    function nif_wrapper(env: access erl_nif_env_t;
                         argc: C.int;
                         argv: erl_nif_terms_t) return erl_nif_term_t
-      with 
+      with
          convention => C,
          pre => argc = 1;
 

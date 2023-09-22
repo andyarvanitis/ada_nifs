@@ -6,25 +6,25 @@ package body my_nifs is
 
    package incrementer is new erlang_nifs.arity_1
      (erlang_name => "increment",
-      arg_type => integer_type,
-      ret_type => integer_type,
+      argument_type => integer_type,
+      return_type => integer_type,
       ada_function => plus_one);
 
    package negater is new erlang_nifs.arity_1
      (erlang_name => "negate",
-      arg_type => long_float_type,
-      ret_type => long_float_type,
+      argument_type => long_float_type,
+      return_type => long_float_type,
       ada_function => "-");
 
-   --  package uppercaser is new erlang_nifs.arity_1
-   --    (erlang_name => "uppercase",
-   --     arg_type => string_type,
-   --     ret_type => string_type,
-   --     ada_function => uppercase);
+   package uppercaser is new erlang_nifs.arity_1
+     (erlang_name => "uppercase",
+      argument_type => string_type,
+      return_type => string_type,
+      ada_function => uppercase);
 
 begin
    incrementer.do_nothing;
    negater.do_nothing;
-   --  uppercaser.do_nothing;
+   uppercaser.do_nothing;
 
 end my_nifs;

@@ -3,6 +3,7 @@ with interfaces.C.strings;
 use type interfaces.C.int;
 with ada.containers; use ada.containers;
 with ada.containers.vectors;
+with supported_erlang_types; use supported_erlang_types;
 
 package erlang_nifs is
    --  pragma SPARK_mode;
@@ -12,53 +13,13 @@ package erlang_nifs is
    subtype erl_nif_env_t is enif_environment_t;
    type erl_nif_term_t is new interfaces.unsigned_64;
 
-   type nif_supported_type_id is (e_integer, e_long_float, e_string);
+   package types renames supported_erlang_types;
 
-   generic
-      type t is private;
-      type_id: nif_supported_type_id;
-      with function to_t(x: in integer) return t is <>;
-      with function to_t(x: in long_float) return t is <>;
-      with function to_t(x: in string) return t is <>;
-      with function from_t(x: in t) return integer is <>;
-      with function from_t(x: in t) return long_float is <>;
-      with function from_t(x: in t) return string is <>;
-   package nif_supported_types is
-      --
-   end nif_supported_types;
-
-   generic
-      type t is private;
-      type t1 is private;
-      type t2 is private;
-   package checked_conversions is
-      function to_t(x: in t) return t is (x);
-      function to_t(unused: in t)
-         return t1 is (raise constraint_error);
-      function to_t(unused: in t)
-         return t2 is (raise constraint_error);
-      function from_t(x: in t) return t is (x);
-      function from_t(unused: in t)
-         return t1 is (raise constraint_error);
-      function from_t(unused: in t)
-         return t2 is (raise constraint_error);
-
-   end checked_conversions;
-
-   subtype bounded_string is string (1 .. 1);
-
-   package integer_conversions is new checked_conversions(integer, long_float, bounded_string);
-   use integer_conversions;
-
-   package float_conversions is new checked_conversions(long_float, integer, bounded_string);
-   use float_conversions;
-
-   package string_conversions is new checked_conversions(bounded_string, integer, long_float);
-   use string_conversions;
-
-   package integer_type is new nif_supported_types(integer, e_integer);
-   package long_float_type is new nif_supported_types(long_float, e_long_float);
-   package string_type is new nif_supported_types(bounded_string, e_string);
+   -- Package instances used directly by users creating NIF bindings
+   --
+   package integer_type renames types.integer_type;
+   package long_float_type renames types.long_float_type;
+   package string_type renames types.string_type;
 
 private
 
@@ -89,9 +50,7 @@ private
    end record
       with Convention => C_pass_by_copy;
 
-   package funcs_vectors is new Vectors(Index_Type => Natural,
-                                        Element_Type => enif_func_t);
-   use funcs_vectors;
+   package funcs_vectors is new vectors(index_type => positive, element_type => enif_func_t);
    nif_functions: funcs_vectors.vector;
 
 end erlang_nifs;
