@@ -1,5 +1,6 @@
 
 package supported_erlang_types is
+   pragma pure;
    pragma assertion_policy(check);
 
    type nif_supported_type_id is (e_integer, e_long_float, e_string);
