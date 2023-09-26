@@ -1,6 +1,7 @@
 package body erlang_nifs.c_apis is
 
-   procedure populate_nif_array(arr: in out nif_funcs_array_t; count: C.int with unreferenced) is
+   procedure populate_nif_array(arr: in out nif_funcs_array_t;
+                              count: C.int with unreferenced) is
       i : integer := 0;
    begin
       for nif of nif_functions loop
@@ -10,4 +11,3 @@ package body erlang_nifs.c_apis is
    end populate_nif_array;
 
 end erlang_nifs.c_apis;
-

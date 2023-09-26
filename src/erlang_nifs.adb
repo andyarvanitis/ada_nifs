@@ -14,7 +14,8 @@ package body erlang_nifs is
    package body get_values is
 
       function get_int(env: not null access erl_nif_env_t;
-                       term: erl_nif_term_t) return integer is
+                      term: erl_nif_term_t)
+               return integer is
          i: C.int := 0;
       begin
          if enif_get_int(env, term, i) = 1 then
@@ -26,7 +27,8 @@ package body erlang_nifs is
 
 
       function get_double(env: not null access erl_nif_env_t;
-                          term: erl_nif_term_t) return long_float is
+                         term: erl_nif_term_t)
+               return long_float is
          d: C.double := 0.0;
       begin
          if enif_get_double(env, term, d) = 1 then
@@ -38,7 +40,8 @@ package body erlang_nifs is
 
 
       function get_string_length(env: not null access erl_nif_env_t;
-                                 term: erl_nif_term_t) return C.unsigned
+                                term: erl_nif_term_t)
+               return C.unsigned
          with post => get_string_length'result < C.unsigned'last and
                          C.size_t(get_string_length'result) < C.size_t'last is
          len: C.unsigned := 0;
@@ -51,7 +54,8 @@ package body erlang_nifs is
 
 
       function get_string(env: not null access erl_nif_env_t;
-                          term: erl_nif_term_t) return string is
+                         term: erl_nif_term_t)
+               return string is
          -- Increment length to account for terminating null
          len : constant C.unsigned := get_string_length(env, term) + 1;
          buf: C.char_array(1 .. C.size_t(len));
@@ -69,7 +73,8 @@ package body erlang_nifs is
 
 
       function get_value(env: not null access erl_nif_env_t;
-                         term: erl_nif_term_t) return value_type.t is
+                        term: erl_nif_term_t)
+               return value_type.t is
       begin
          case value_type.type_id is
             when e_integer =>
@@ -86,7 +91,8 @@ package body erlang_nifs is
    package body make_values is
 
       function make_value(env: not null access erl_nif_env_t;
-                          value: in value_type.t) return erl_nif_term_t is
+                        value: in value_type.t)
+               return erl_nif_term_t is
       begin
          case value_type.type_id is
             when e_integer =>
@@ -113,7 +119,8 @@ package body erlang_nifs is
    end make_values;
 
    function raise_erlang_exception(env: not null access erl_nif_env_t;
-                                   message: in string) return erl_nif_term_t is
+                               message: in string)
+            return erl_nif_term_t is
       reason: constant erl_nif_term_t :=
                   enif_make_string(env, C.to_C(message), ERL_NIF_LATIN1);
    begin
@@ -121,7 +128,8 @@ package body erlang_nifs is
    end raise_erlang_exception;
 
    function raise_erlang_exception(env: not null access erl_nif_env_t;
-                                   error: in exception_occurrence) return erl_nif_term_t is
+                                 error: in exception_occurrence)
+            return erl_nif_term_t is
       message: constant string := "Ada exception: " &
                                    exception_name(error) &
                                   " - " &

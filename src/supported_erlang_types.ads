@@ -3,7 +3,8 @@ package supported_erlang_types is
    pragma pure;
    pragma assertion_policy(check);
 
-   type nif_supported_type_id is (e_integer, e_long_float, e_string);
+   type nif_supported_type_id is
+      (e_integer, e_long_float, e_string);
 
    type_definition_error: exception;
 
@@ -37,22 +38,29 @@ package supported_erlang_types is
          return t2 is (raise type_definition_error);
    end conversions;
 
-   package integer_conversions is new conversions(integer, long_float, string);
+   package integer_conversions is
+      new conversions(integer, long_float, string);
    use integer_conversions;
 
-   package float_conversions is new conversions(long_float, integer, string);
+   package float_conversions is
+      new conversions(long_float, integer, string);
    use float_conversions;
 
-   package string_conversions is new conversions(string, integer, long_float);
+   package string_conversions is
+      new conversions(string, integer, long_float);
    use string_conversions;
 
    --------------------------------------------------------------------------------------
    -- Package instances used directly by users creating NIF bindings
    --------------------------------------------------------------------------------------
 
-   package integer_type is new nif_supported_types(integer, e_integer);
-   package long_float_type is new nif_supported_types(long_float, e_long_float);
-   package string_type is new nif_supported_types(string, e_string);
+   package integer_type is
+      new nif_supported_types(integer, e_integer);
+
+   package long_float_type is
+      new nif_supported_types(long_float, e_long_float);
+
+   package string_type is
+      new nif_supported_types(string, e_string);
 
 end supported_erlang_types;
-
