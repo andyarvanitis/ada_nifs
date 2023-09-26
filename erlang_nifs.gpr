@@ -28,22 +28,16 @@ project Erlang_Nifs is
    for Archive_Builder use ("true"); -- no-op
    for Archive_Indexer use ("true"); -- no-op
 
-   -- Runtime_Dir := "$(dirname $(gcc --print-libgcc))";
-   Runtime_Dir := "/Users/andy/.config/alire/cache/dependencies/gnat_native_12.2.1_77267eb1/bin/../lib/gcc/x86_64-apple-darwin19.6.0/12.2.0";
-   Runtime_Lib := Runtime_Dir & "/adalib/libgnat_pic.a";
-
-   -- Erlang_Rts_Dir := "-noshell -eval 'io:fwrite(code:lib_dir(erts))' -eval 'init:stop()'";
-   Erlang_Lib_Bundle := "/usr/local/lib/erlang/erts-14.0.2/bin/beam.smp";
+   Options_File := external ("OPTIONS_FILE", "unknown");
+   Temp_Dir := external ("TMPDIR", "unknown");
 
    case Library_Type is
       when "static-pic" =>
          for Library_Options use ("-lc",
-                                    "-lstdc++",
-                                    "-L" & Runtime_Dir,
-                                    Runtime_Lib,
-                                    "-bundle",
-                                    "-bundle_loader" & Erlang_Lib_Bundle,
-                                    "-o" & Project'Library_Name & ".so");
+                                  "-lstdc++",
+                                  "@" & Temp_Dir & Options_File, -- NOTE: this is from alr environment (alire.toml)
+                                  "-bundle",
+                                  "-o" & Project'Library_Name & ".so");
       when others =>
          null;
    end case;
@@ -55,5 +49,9 @@ project Erlang_Nifs is
    package Install is
       for Artifacts (".") use ("share");
    end Install;
+
+   package Clean is
+     for Artifacts_In_Object_Dir use Clean'Artifacts_In_Object_Dir & (Project'Library_Name & ".so");
+   end Clean;
 
 end Erlang_Nifs;

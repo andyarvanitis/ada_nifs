@@ -11,3 +11,16 @@ maintainers-logins = ["andyarvanitis"]
 "*".ada_version = "Ada2022"
 [[depends-on]]
 gnatprove = "^12.1.1"
+
+[environment]
+RUNTIME_DIR.append = "dirname $(gcc --print-libgcc)"
+RUNTIME_LIB.append = "/adalib/libgnat_pic.a"
+ERLANG_LIB_BUNDLE.append = "erl -noshell -eval 'io:fwrite(code:root_dir())' -eval 'init:stop()'"
+OPTIONS_FILE.append = "/ada_nifs_linker_options.in"
+
+[[actions]]
+type = "pre-build"
+command = [ "sh", "-c", """ DIR=$(eval ${RUNTIME_DIR}); \
+                            echo -L ${DIR} ${DIR}/${RUNTIME_LIB} \
+                            -bundle_loader $(find $(eval ${ERLANG_LIB_BUNDLE}) -name 'beam.smp') \
+                            > ${TMPDIR}${OPTIONS_FILE} """ ]
