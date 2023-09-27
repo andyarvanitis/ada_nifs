@@ -1,10 +1,11 @@
+with ada.strings.utf_encoding; use ada.strings.utf_encoding;
 
 package supported_erlang_types is
    pragma pure;
    pragma assertion_policy(check);
 
    type nif_supported_type_id is
-      (e_integer, e_long_float, e_string);
+      (e_integer, e_long_float, e_string, e_utf_8_string);
 
    type_definition_error: exception;
 
@@ -62,5 +63,8 @@ package supported_erlang_types is
 
    package string_type is
       new nif_supported_types(string, e_string);
+
+   package utf_8_string_type is
+      new nif_supported_types(utf_8_string, e_utf_8_string);
 
 end supported_erlang_types;

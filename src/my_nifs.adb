@@ -22,6 +22,12 @@ package body my_nifs is
        return_type => string_type,
       ada_function => uppercase);
 
- pragma unreferenced (incrementer, negater, uppercaser);
+   package uppercaser_u8 is new erlang_nifs.arity_1
+      (erlang_name => "uppercase_binary",
+     argument_type => utf_8_string_type,
+       return_type => utf_8_string_type,
+      ada_function => uppercase);
+
+ pragma unreferenced (incrementer, negater, uppercaser, uppercaser_u8);
 
 end my_nifs;

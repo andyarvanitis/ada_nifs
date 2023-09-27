@@ -7,7 +7,7 @@ package body erlang_nifs is
    use type C.size_t;
 
    ERL_NIF_LATIN1 : constant := 1;
-   --  ERL_NIF_UTF8   : constant := 2;
+-- ERL_NIF_UTF8   : constant := 2;
 
    nif_api_call_failure: exception;
 
@@ -71,6 +71,17 @@ package body erlang_nifs is
          end if;
       end get_string;
 
+      function get_utf_8_string(env: not null access erl_nif_env_t;
+                               term: erl_nif_term_t)
+               return string is
+         bin: erl_nif_binary_t;
+      begin
+         if enif_inspect_binary(env, term, bin) = 1 then
+            return C.strings.value(bin.data, bin.size);
+         else
+            raise nif_api_call_failure with "enif_inspect_binary returned 'false'";
+         end if;
+      end get_utf_8_string;
 
       function get_value(env: not null access erl_nif_env_t;
                         term: erl_nif_term_t)
@@ -83,6 +94,8 @@ package body erlang_nifs is
                return value_type.to_t(get_double(env, term));
             when e_string =>
                return value_type.to_t(get_string(env, term));
+            when e_utf_8_string =>
+               return value_type.to_t(get_utf_8_string(env, term));
          end case;
       end get_value;
    end get_values;
@@ -112,6 +125,19 @@ package body erlang_nifs is
                   s: constant string := value_type.from_t(value);
                begin
                   return enif_make_string(env, C.to_C(s), ERL_NIF_LATIN1);
+               end;
+            when e_utf_8_string =>
+               declare
+                  s: constant string := value_type.from_t(value);
+                  term: erl_nif_term_t;
+                  data: C.strings.chars_ptr;
+               begin
+                  data := enif_make_new_binary(env, s'length, term);
+                  C.strings.update(item => data,
+                                 offset => 0,
+                                    str => s,
+                                  check => false);
+                  return term;
                end;
             end case;
       end make_value;

@@ -20,7 +20,7 @@ project Erlang_Nifs is
    for Library_Kind use Library_Type;
 
    package Compiler is
-      for Default_Switches ("Ada") use Erlang_Nifs_Config.Ada_Compiler_Switches & ("-gnata");
+      for Default_Switches ("Ada") use Erlang_Nifs_Config.Ada_Compiler_Switches & ("-gnata", "-gnatW8");
       for Default_Switches ("C++") use ("-I/usr/local/lib/erlang/usr/include");
    end Compiler;
 

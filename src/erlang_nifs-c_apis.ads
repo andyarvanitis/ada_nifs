@@ -5,6 +5,13 @@ private package erlang_nifs.c_apis is
    -- Erlang NIF C APIs
    --------------------------------------------------------------------------------------
 
+   type erl_nif_binary_t is record
+      size: aliased C.size_t;
+      data: C.strings.chars_ptr;
+   end record
+      with convention => C;
+
+
    function enif_get_int(env: access erl_nif_env_t;
                         term: erl_nif_term_t;
                        value: in out C.int)
@@ -61,6 +68,22 @@ private package erlang_nifs.c_apis is
       with convention => C,
                import => true,
         external_name => "enif_make_string";
+
+   function enif_inspect_binary(env: access erl_nif_env_t;
+                               term: erl_nif_term_t;
+                              value: in out erl_nif_binary_t)
+            return integer
+      with convention => C,
+               import => true,
+        external_name => "enif_inspect_binary";
+
+   function enif_make_new_binary(env: access erl_nif_env_t;
+                                 size: C.size_t;
+                                 term: out erl_nif_term_t)
+            return C.strings.chars_ptr
+      with convention => C,
+               import => true,
+        external_name => "enif_make_new_binary";
 
    function enif_raise_exception(env: access erl_nif_env_t;
                               reason: erl_nif_term_t)

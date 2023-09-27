@@ -21,6 +21,7 @@ package erlang_nifs is
    package integer_type renames types.integer_type;
    package long_float_type renames types.long_float_type;
    package string_type renames types.string_type;
+   package utf_8_string_type renames types.utf_8_string_type;
 
 private
 
