@@ -1,0 +1,26 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+      {
+         "type": "gnat",
+         "taskKind": "buildProject",
+         "problemMatcher": [
+            "$ada"
+         ],
+         "group": {
+            "kind": "build",
+            "isDefault": true
+         },
+         "label": "ada: Build current project"
+      },
+      {
+         "type": "gnat",
+         "taskKind": "examineProject",
+         "problemMatcher": [
+            "$ada"
+         ],
+         "group": "build",
+         "label": "ada: Examine project"
+      }
+   ]
+}

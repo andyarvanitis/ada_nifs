@@ -1,6 +1,6 @@
 with ada.characters.handling;
 
-package sample_functions is
+package examples_functions is
    pragma SPARK_mode;
    pragma pure;
    pragma assertion_policy( ignore );
@@ -12,4 +12,4 @@ package sample_functions is
    function uppercase(s: string)
             return string is (ada.characters.handling.to_upper(s));
 
-end sample_functions;
+end examples_functions;

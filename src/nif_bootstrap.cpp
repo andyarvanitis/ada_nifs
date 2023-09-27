@@ -35,5 +35,5 @@ public:
 static NifsListProxy nifsListProxy;
 
 extern "C" {
-    ERL_NIF_INIT(my_nifs, nifsListProxy, NULL, NULL, NULL, NULL)
+    ERL_NIF_INIT(examples, nifsListProxy, NULL, NULL, NULL, NULL)
 }

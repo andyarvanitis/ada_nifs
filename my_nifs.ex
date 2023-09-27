@@ -1,5 +1,5 @@
 
-defmodule :my_nifs do
+defmodule :examples do
 
   @on_load :load_nifs
 

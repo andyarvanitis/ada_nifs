@@ -1,4 +1,4 @@
--module(my_nifs).
+-module(examples).
 
 -export([init/0, increment/1, negate/1, uppercase/1, uppercase_binary/1]).
 

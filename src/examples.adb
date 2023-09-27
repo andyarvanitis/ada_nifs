@@ -1,8 +1,8 @@
 with erlang_nifs; use erlang_nifs;
 with erlang_nifs.arity_1;
-with sample_functions; use sample_functions;
+with examples_functions; use examples_functions;
 
-package body my_nifs is
+package body examples is
 
    package incrementer is new erlang_nifs.arity_1
       (erlang_name => "increment",
@@ -30,4 +30,4 @@ package body my_nifs is
 
  pragma unreferenced (incrementer, negater, uppercaser, uppercaser_u8);
 
-end my_nifs;
+end examples;

@@ -6,7 +6,7 @@ project Erlang_Nifs is
    for Library_Name use "Erlang_Nifs";
    for Library_Version use Project'Library_Name & ".so." & Erlang_Nifs_Config.Crate_Version;
 
-   for Library_Interface use ("my_nifs");
+   for Library_Interface use ("examples");
    for Library_Auto_Init use "true";
    for Library_Dir use "lib";
 
